@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" role="img" aria-label="ChessTalk logo placeholder">
+  <rect width="320" height="320" rx="56" fill="#2a2520"/>
+  <path d="M100 250h120v24H100z" fill="#b8935c"/>
+  <path d="M130 250V120l-20-20V74h100v26l-20 20v130z" fill="#c9a86c"/>
+  <circle cx="160" cy="62" r="26" fill="#f2ebe1"/>
+</svg>
