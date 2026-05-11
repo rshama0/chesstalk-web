@@ -11,7 +11,8 @@ Pure static landing website for the Chesstalk Android app.
 
 ## Structure
 
-- `index.html` - landing page with hero, features, screenshots, contact, and footer links
+- `index.html` - landing page with hero, features, screenshots, and footer links
+- `404.html` - custom **Page not found** for GitHub Pages (same layout/theme as the rest of the site; keep at publish root next to `index.html`)
 - `privacy.html` - privacy policy placeholder page
 - `terms.html` - terms placeholder page
 - `css/style.css` - shared site styling
