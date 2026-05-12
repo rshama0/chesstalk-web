@@ -39,11 +39,6 @@
     <main class="legal-main">
       <section class="section">
         <div class="container contact-page">
-          <div class="contact-feedback" id="contact-success" hidden role="status">
-            <p><strong>Thanks — your message is on its way.</strong></p>
-            <p>If you don’t hear back within a few days, check your spam folder or try again.</p>
-          </div>
-
           <header class="contact-intro">
             <p class="eyebrow">ChessTalk</p>
             <h1>Contact us</h1>
@@ -54,12 +49,12 @@
           </header>
 
           <div class="contact-panel contact-panel--form">
-            <!-- Replace abc@example.com with the inbox you activate at https://formsubmit.co (first submission confirms the address). -->
+            <!-- FormSubmit → hello@chesstalk.app. First use: confirm the inbox at https://formsubmit.co (see README). -->
             <form
               id="contact-form"
               class="contact-form"
               method="POST"
-              action="https://formsubmit.co/abc@example.com"
+              action="https://formsubmit.co/hello@chesstalk.app"
             >
               <input type="hidden" name="_next" id="contact-form-next" value="" />
               <input type="hidden" name="_subject" id="contact-form-subject" value="ChessTalk message" />
@@ -139,7 +134,7 @@
         <a href="./privacy.html">Privacy Policy</a>
         <a href="./terms.html">Terms</a>
         <a href="./contact.html">Contact</a>
-        <a href="mailto:abc@example.com">abc@example.com</a>
+        <a href="mailto:hello@chesstalk.app">hello@chesstalk.app</a>
       </div>
     </footer>
     <script src="./js/main.js" defer></script>
@@ -147,7 +142,7 @@
       (function () {
         var next = document.getElementById("contact-form-next");
         if (next) {
-          next.value = new URL("contact.html?thanks=1", window.location.href).href;
+          next.value = new URL("thank-you.html", window.location.href).href;
         }
         var form = document.getElementById("contact-form");
         var topic = document.getElementById("contact-topic");
@@ -158,10 +153,6 @@
             subj.value =
               opt && opt.value ? "ChessTalk · " + String(opt.textContent || "").trim() : "ChessTalk message";
           });
-        }
-        if (new URLSearchParams(window.location.search).get("thanks") === "1") {
-          var ok = document.getElementById("contact-success");
-          if (ok) ok.removeAttribute("hidden");
         }
       })();
     </script>
