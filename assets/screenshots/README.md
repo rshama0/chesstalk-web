@@ -30,7 +30,7 @@ Folder names are **organizational**; the script only cares about **paths listed 
 
 | Folder       | Homepage role |
 | ------------ | ------------- |
-| `home/`      | Hero phone **and** first “See how ChessTalk feels in use” device (two rotators, same `home` group). |
+| `home/`      | Hero phone **and** first “See how ChessBird feels in use” device (two rotators, same `home` group). |
 | `room/`      | Second gallery device (invites / room). |
 | `gameplay/`  | Third gallery device (live play). |
 | `other/`     | Fourth gallery device (captioned “Settings” in the UI). |

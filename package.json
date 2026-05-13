@@ -1,0 +1,8 @@
+{
+  "name": "chessbird-web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "inject:public-origin": "node scripts/inject-public-origin.mjs"
+  }
+}
