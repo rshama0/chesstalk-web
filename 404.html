@@ -8,16 +8,21 @@
       name="description"
       content="That page isn’t on the board. Head back to ChessBird’s homepage or use the links below."
     />
-    <link rel="canonical" href="__CHESSBIRD_PUBLIC_ORIGIN__/404.html" />
+    <meta name="theme-color" content="#0F0A2A" />
+    <meta name="apple-mobile-web-app-title" content="ChessBird" />
+    <meta name="application-name" content="ChessBird" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <link rel="canonical" href="https://chessbird.app/404.html" />
     <meta property="og:site_name" content="ChessBird" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="__CHESSBIRD_PUBLIC_ORIGIN__/404.html" />
+    <meta property="og:url" content="https://chessbird.app/404.html" />
     <meta property="og:title" content="Page not found | ChessBird" />
     <meta
       property="og:description"
       content="That page isn’t on the board. Head back to ChessBird’s homepage or use the links below."
     />
-    <meta property="og:image" content="__CHESSBIRD_PUBLIC_ORIGIN__/assets/icons/app-icon-512.png" />
+    <meta property="og:image" content="https://chessbird.app/assets/branding/og-image.png" />
+    <meta property="og:image:alt" content="ChessBird — social voice chess with friends, together." />
     <meta property="og:image:width" content="512" />
     <meta property="og:image:height" content="512" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -26,7 +31,7 @@
       name="twitter:description"
       content="That page isn’t on the board. Head back to ChessBird’s homepage or use the links below."
     />
-    <meta name="twitter:image" content="__CHESSBIRD_PUBLIC_ORIGIN__/assets/icons/app-icon-512.png" />
+    <meta name="twitter:image" content="https://chessbird.app/assets/branding/og-image.png" />
     <!-- Google Analytics 4 (GA4) placeholder setup: replace G-XXXXXXXXXX with your real Measurement ID before go-live. -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
     <script>
@@ -37,11 +42,10 @@
       gtag("js", new Date());
       gtag("config", "G-XXXXXXXXXX");
     </script>
-    <link rel="icon" href="__CHESSBIRD_PUBLIC_ORIGIN__/favicon.ico" sizes="any" />
-    <link rel="icon" type="image/png" sizes="32x32" href="__CHESSBIRD_PUBLIC_ORIGIN__/assets/icons/app-icon-32.png" />
-    <link rel="icon" type="image/png" sizes="192x192" href="__CHESSBIRD_PUBLIC_ORIGIN__/assets/icons/app-icon-192.png" />
-    <link rel="apple-touch-icon" href="__CHESSBIRD_PUBLIC_ORIGIN__/assets/icons/app-icon-192.png" />
-    <link rel="manifest" href="__CHESSBIRD_PUBLIC_ORIGIN__/site.webmanifest" />
+    <link rel="icon" href="https://chessbird.app/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="96x96" href="https://chessbird.app/assets/branding/favicon-96x96.png" />
+    <link rel="apple-touch-icon" href="https://chessbird.app/assets/branding/apple-touch-icon.png" />
+    <link rel="manifest" href="https://chessbird.app/site.webmanifest" />
     <link rel="stylesheet" href="./css/style.css" />
   </head>
   <body>
@@ -93,8 +97,9 @@
     </footer>
     <!--
       GitHub Pages: 404.html must live at the root of the published site (same folder as index.html).
-      If you use Project Pages (user.github.io/repo-name/) and assets fail to load from a deep mistyped
-      URL, add <base href="https://YOUR_USER.github.io/YOUR_REPO/"> here once, with your real URL.
+      Production: https://chessbird.app — relative ./css and ./assets links resolve from the 404 document URL.
+      Project Pages (user.github.io/repo-name/): if assets fail from a deep mistyped URL, add a one-time
+      <base href="https://youruser.github.io/yourrepo/"> here with your real Pages URL.
     -->
   </body>
 </html>

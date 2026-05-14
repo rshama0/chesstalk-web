@@ -4,25 +4,34 @@ Static site hosting notes for **`chessbird-web`** live here.
 
 ## Open Graph, Twitter/X, favicon, and manifest (absolute URLs)
 
-HTML and `site.webmanifest` use a single placeholder token: **`__CHESSBIRD_PUBLIC_ORIGIN__`** (no trailing slash). Crawlers (WhatsApp, Telegram, Discord, X, LinkedIn, Facebook, Slack) expect **fully qualified** `https://…` URLs in **`og:image`**, **`og:url`**, **`twitter:image`**, **`link rel="canonical"`**, favicon / **`apple-touch-icon`**, and **`manifest`** `href` / icon `src` values.
+Shipped HTML and **`site.webmanifest`** pin **`https://chessbird.app`** (no trailing slash) for:
 
-### Production deploy
+- **`og:url`**, **`og:title`**, **`og:description`**, **`og:image`**, **`og:image:alt`**, **`og:type`**, **`og:site_name`**
+- **`twitter:card`**, **`twitter:title`**, **`twitter:description`**, **`twitter:image`**
+- **`link rel="canonical"`**, favicon / **`apple-touch-icon`**, **`manifest`**, manifest **`icons`**
+- **`theme-color`**, **`apple-mobile-web-app-title`**, **`application-name`**, **`mobile-web-app-capable`**
 
-1. Set your public site origin, e.g. `https://www.chessbird.app` (HTTPS, no trailing slash).
-2. From the **`chessbird-web`** repo root, run:
+Crawlers (WhatsApp, Telegram, Discord, X, LinkedIn, Facebook, Slack) need **fully qualified HTTPS** asset URLs; the repo matches production so previews work without a build step.
 
-   ```bash
-   npm install
-   CHESSBIRD_PUBLIC_ORIGIN=https://www.chessbird.app npm run inject:public-origin
-   ```
+### Shared social image
 
-   The script **`scripts/inject-public-origin.mjs`** replaces every **`__CHESSBIRD_PUBLIC_ORIGIN__`** in the listed HTML files and **`site.webmanifest`**. You can use **`PUBLIC_APP_BASE_URL`** instead of **`CHESSBIRD_PUBLIC_ORIGIN`** (same effect).
+All pages use **`https://chessbird.app/assets/branding/og-image.png`** for **`og:image`** and **`twitter:image`**. Replace that file (and optional width/height meta) when you ship a final art pass.
 
-3. Deploy the **resulting** files (or run the same command in CI before uploading to static hosting).
+### Optional: GitHub Pages preview / alternate origin
 
-If the env var is **unset**, the script removes the token so URLs become **root-relative** (e.g. `/assets/icons/...`) — fine for quick local static servers; **not** ideal for social previews. Always inject before production publish.
+If you serve the same files from **`https://user.github.io/repo/`** (or another host), re-root absolute URLs:
 
-**Reference:** `env.example` in the **`chessbird-web`** repo root lists the variable.
+```bash
+npm install
+CHESSBIRD_PUBLIC_ORIGIN=https://user.github.io/yourrepo npm run inject:public-origin
+```
+
+The script **`scripts/inject-public-origin.mjs`** replaces every **`https://chessbird.app`** in the listed HTML files and **`site.webmanifest`**. You can use **`PUBLIC_APP_BASE_URL`** instead of **`CHESSBIRD_PUBLIC_ORIGIN`**.
+
+- If **`CHESSBIRD_PUBLIC_ORIGIN` is unset**, the script **does nothing** (production URLs stay).
+- If it **equals** `https://chessbird.app`, no rewrite is needed.
+
+**Reference:** `env.example` in the **`chessbird-web`** repo root.
 
 ### After deploy
 

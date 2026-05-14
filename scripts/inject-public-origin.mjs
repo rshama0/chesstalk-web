@@ -1,13 +1,16 @@
 /**
- * Replaces __CHESSBIRD_PUBLIC_ORIGIN__ in static HTML + site.webmanifest with an absolute origin.
+ * Rewrites pinned production absolute URLs (`https://chessbird.app`) in static HTML + `site.webmanifest`
+ * when `CHESSBIRD_PUBLIC_ORIGIN` or `PUBLIC_APP_BASE_URL` is set to a different origin (e.g. GitHub Pages
+ * preview `https://user.github.io/repo` or a staging host).
  *
- * Usage (production deploy):
- *   CHESSBIRD_PUBLIC_ORIGIN=https://www.your-domain.com npm run inject:public-origin
+ * Shipped sources use **https://chessbird.app** for Open Graph, Twitter, canonical, favicon, manifest,
+ * and icon `src` values so crawlers always see fully qualified HTTPS URLs.
  *
- * Same variable name as optional Android/web docs; falls back to PUBLIC_APP_BASE_URL.
+ * Usage:
+ *   CHESSBIRD_PUBLIC_ORIGIN=https://user.github.io/myrepo npm run inject:public-origin
  *
- * If unset: token is removed so paths become root-relative (/assets/...), which is fine for
- * local static servers but NOT ideal for OG crawlers — set CHESSBIRD_PUBLIC_ORIGIN in prod CI.
+ * If the env var is **unset**, the script exits without changes (production URLs remain).
+ * If the env var equals `https://chessbird.app`, no rewrite is needed.
  */
 import fs from "fs";
 import path from "path";
@@ -15,7 +18,9 @@ import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
-const origin = String(process.env.CHESSBIRD_PUBLIC_ORIGIN || process.env.PUBLIC_APP_BASE_URL || "")
+const PRODUCTION_ORIGIN = "https://chessbird.app";
+
+const raw = String(process.env.CHESSBIRD_PUBLIC_ORIGIN || process.env.PUBLIC_APP_BASE_URL || "")
   .trim()
   .replace(/\/+$/, "");
 
@@ -29,17 +34,27 @@ const files = [
   "site.webmanifest",
 ];
 
-if (!origin) {
+if (!raw) {
   process.stderr.write(
-    "[inject-public-origin] CHESSBIRD_PUBLIC_ORIGIN (or PUBLIC_APP_BASE_URL) unset — replacing token with empty string (root-relative URLs).\n",
+    `[inject-public-origin] No CHESSBIRD_PUBLIC_ORIGIN — leaving pinned ${PRODUCTION_ORIGIN} URLs unchanged.\n`,
   );
+  process.exit(0);
 }
+
+if (raw === PRODUCTION_ORIGIN) {
+  process.stderr.write(`[inject-public-origin] origin is production; no changes.\n`);
+  process.exit(0);
+}
+
+const esc = PRODUCTION_ORIGIN.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const prodRe = new RegExp(esc, "g");
 
 for (const name of files) {
   const fp = path.join(root, name);
   if (!fs.existsSync(fp)) continue;
   const before = fs.readFileSync(fp, "utf8");
-  const after = before.replace(/__CHESSBIRD_PUBLIC_ORIGIN__/g, origin);
+  let after = before.replace(/__CHESSBIRD_PUBLIC_ORIGIN__/g, raw);
+  after = after.replace(prodRe, raw);
   if (after !== before) {
     fs.writeFileSync(fp, after, "utf8");
     process.stdout.write(`[inject-public-origin] updated ${name}\n`);

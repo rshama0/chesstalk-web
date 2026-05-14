@@ -7,7 +7,7 @@ Pure static landing website for the ChessBird Android app.
 - Framework-free (`HTML`, `CSS`, minimal vanilla `JS`) for the shipped site
 - GitHub Pages compatible
 - Mobile-first and lightweight
-- **Optional Node step for production:** `npm run inject:public-origin` replaces **`__CHESSBIRD_PUBLIC_ORIGIN__`** so OG/Twitter/favicon/manifest URLs are absolute HTTPS (see **`docs/hosting/README.md`**). Source files keep the placeholder; run inject in CI or before upload. `npm install` only adds the tiny script runner in `package.json`.
+- **Metadata:** HTML and **`site.webmanifest`** ship pinned to **`https://chessbird.app`** for Open Graph, Twitter/X, canonical, favicon, and manifest. **`npm run inject:public-origin`** is only needed to **rewrite** those URLs for a non-production host (e.g. `github.io` preview); see **`docs/hosting/README.md`**. `npm install` only adds the tiny script runner in `package.json`.
 
 ## Structure
 
@@ -20,12 +20,14 @@ Pure static landing website for the ChessBird Android app.
 - `css/style.css` - shared site styling
 - `js/main.js` - lightweight screenshot rotation (`screenshotGroups`); see **`assets/screenshots/README.md`** for architecture, two-layer crossfade rules, and how to add shots
 - `assets/` - replaceable static assets
+- `favicon.ico` - root ICO for default browser `/favicon.ico` requests
+- `assets/branding/` - favicon PNGs, Apple touch icon, manifest icons (see **`assets/branding/README.md`**)
 
 ## Contact form (FormSubmit)
 
 - Submissions go to **hello@chessbird.app** via [FormSubmit](https://formsubmit.co/) (`contact.html` form `action`).
 - **First-time activation:** FormSubmit sends a **confirmation link** to that inbox the first time the form endpoint is used. You must **open the email and confirm** before messages are delivered. If you already confirmed an inbox for a **previous** contact domain, switching to **hello@chessbird.app** requires **confirming again** for the new address.
-- After a successful submit (including FormSubmit’s built-in CAPTCHA step), users are redirected to **`thank-you.html`** (`_next` hidden field, URL built in `contact.html` so it works on GitHub Pages).
+- After a successful submit (including FormSubmit’s built-in CAPTCHA step), users are redirected to **`https://chessbird.app/thank-you.html`** (`_next` hidden field). Form subject line is still prefixed on submit via a small inline script in `contact.html`.
 - **Spam:** Honeypot field `_honey` (hidden, leave empty) plus FormSubmit’s default CAPTCHA; do not add `_captcha=false` unless you intentionally disable it.
 
 ## Repository

@@ -1,5 +1,5 @@
-Placeholder icons go here.
+# Legacy `assets/icons` folder
 
-Keep stable filenames for easy replacement without changing HTML/CSS references.
+Raster **favicon**, **Apple touch**, **Open Graph**, and **web manifest** icons now live under **`assets/branding/`** with stable filenames (see that folder’s `README.md`).
 
-For **production** social previews, HTML `og:image` / `twitter:image` / favicon paths are filled via **`CHESSBIRD_PUBLIC_ORIGIN`** (see repo **`docs/hosting/README.md`** and `npm run inject:public-origin`).
+This directory is reserved for any **future** icon variants you add without touching HTML—today the shipped pages reference **`assets/branding/`** and root **`favicon.ico`** only.
