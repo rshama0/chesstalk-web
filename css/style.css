@@ -684,6 +684,20 @@ p:last-child {
   margin-bottom: 0;
   margin-top: 0.85rem;
   font-size: 0.9025rem;
+  color: var(--muted);
+}
+
+.contact-panel .contact-email-fallback {
+  margin: 1.1rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.8525rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.contact-panel .contact-email-fallback a {
+  color: var(--accent);
 }
 
 /* Custom 404 — same rhythm as contact/legal, calm recovery */

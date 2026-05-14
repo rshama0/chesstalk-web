@@ -3,8 +3,9 @@
  * when `CHESSBIRD_PUBLIC_ORIGIN` or `PUBLIC_APP_BASE_URL` is set to a different origin (e.g. GitHub Pages
  * preview `https://user.github.io/repo` or a staging host).
  *
- * Shipped sources use **https://chessbird.app** for Open Graph, Twitter, canonical, favicon, manifest,
- * and icon `src` values so crawlers always see fully qualified HTTPS URLs.
+ * Shipped sources use **https://chessbird.app** for Open Graph, Twitter, canonical, favicon, manifest
+ * reference URL, and icon `src` values where pinned for crawlers. In-page navigation and most static
+ * asset paths in HTML use **root-relative** `/…` URLs (not rewritten by this script).
  *
  * Usage:
  *   CHESSBIRD_PUBLIC_ORIGIN=https://user.github.io/myrepo npm run inject:public-origin

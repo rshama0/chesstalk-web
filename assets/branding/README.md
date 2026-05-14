@@ -23,4 +23,4 @@ Many clients request **`/favicon.ico`** by convention. A multi-resolution ICO st
 
 ## Regenerating art
 
-Replace the PNG/ICO files while keeping the same filenames so HTML and the manifest stay stable. For **GitHub Pages preview** or another host, run `npm run inject:public-origin` with `CHESSBIRD_PUBLIC_ORIGIN` set (see `docs/hosting/README.md`); production ships with **https://chessbird.app** already baked in.
+Replace the PNG/ICO files while keeping the same filenames so HTML and the manifest stay stable. For **GitHub Pages preview** or another host, run `npm run inject:public-origin` with `CHESSBIRD_PUBLIC_ORIGIN` set (see `docs/hosting/README.md`) to rewrite pinned **`https://chessbird.app`** strings in HTML/manifest; in-page links and manifest icon paths are **root-relative** (`/assets/branding/…`).
