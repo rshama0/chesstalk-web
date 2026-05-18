@@ -5,7 +5,8 @@
       "namespace": "android_app",
       "package_name": "com.chessbird.app",
       "sha256_cert_fingerprints": [
-        "EC:5C:A8:AB:09:5A:2F:1F:9E:6B:2F:0F:BE:21:84:B1:F1:B3:22:67:98:7B:34:9D:40:96:A5:15:05:62:67:F6"
+        "EC:5C:A8:AB:09:5A:2F:1F:9E:6B:2F:0F:BE:21:84:B1:F1:B3:22:67:98:7B:34:9D:40:96:A5:15:05:62:67:F6",
+        "A6:46:FA:2D:FD:17:A6:63:1F:02:21:55:5E:D6:21:86:ED:1F:C4:D2:2F:CD:D5:BF:4D:57:E3:56:3F:17:32:C9"
       ]
     }
   }

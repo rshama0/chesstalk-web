@@ -23,12 +23,11 @@
   --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
   /* Portrait frame matches common Android captures (e.g. 1080 × 2273) — not legacy 9:16 */
   --screenshot-aspect: 1080 / 2273;
-  --screenshot-hero-max-h: min(78vh, 600px);
-  /* No percentage inside width — avoids circular sizing with fit-content / grid minmax(0, auto) */
-  --screenshot-hero-frame-w: min(312px, 48vw, calc(var(--screenshot-hero-max-h) * 1080 / 2273));
-  /* Secondary gallery (2–4 devices); caps scale down at 4-wide so row stays balanced */
-  --screenshot-showcase-max-h: min(58vh, 480px);
-  --screenshot-showcase-frame-w: min(300px, 42vw, calc(var(--screenshot-showcase-max-h) * 1080 / 2273));
+  /* Mobile-first: use viewport width before desktop density caps */
+  --screenshot-hero-max-h: min(74vh, 640px);
+  --screenshot-hero-frame-w: min(92vw, 22.5rem, calc(var(--screenshot-hero-max-h) * 1080 / 2273));
+  --screenshot-showcase-max-h: min(68vh, 560px);
+  --screenshot-showcase-frame-w: min(88vw, 21rem, calc(var(--screenshot-showcase-max-h) * 1080 / 2273));
 }
 
 *,
@@ -80,7 +79,7 @@ a:focus-visible {
 }
 
 .container {
-  width: min(100% - 1.75rem, var(--max-width));
+  width: min(100% - 1.25rem, var(--max-width));
   margin-inline: auto;
 }
 
@@ -197,8 +196,15 @@ p:last-child {
 
 .hero-grid {
   display: grid;
-  gap: 1.15rem;
-  align-items: start;
+  gap: 1.35rem;
+  align-items: center;
+  justify-items: center;
+}
+
+.hero-grid > :first-child {
+  width: 100%;
+  max-width: 36rem;
+  justify-self: center;
 }
 
 .eyebrow {
@@ -256,9 +262,9 @@ p:last-child {
 
 .showcase-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.45rem;
-  justify-items: stretch;
+  grid-template-columns: 1fr;
+  gap: 1.35rem;
+  justify-items: center;
 }
 
 /* Phone: outer device shell + inset screen (lightweight, not a mockup render) */
@@ -271,7 +277,9 @@ p:last-child {
 }
 
 .screenshot-rotator--hero {
-  min-width: min(312px, 48vw);
+  width: 100%;
+  max-width: min(100%, var(--screenshot-hero-frame-w));
+  min-width: 0;
 }
 
 .screenshot-rotator--showcase {
@@ -279,9 +287,9 @@ p:last-child {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: 100%;
+  max-width: min(100%, var(--screenshot-showcase-frame-w));
   min-width: 0;
-  justify-self: stretch;
+  justify-self: center;
 }
 
 /* Device chassis — sizing lives here; screen gets portrait aspect inside */
@@ -300,11 +308,13 @@ p:last-child {
 }
 
 .screenshot-rotator--hero .screenshot-rotator__frame {
-  width: var(--screenshot-hero-frame-w);
+  width: 100%;
+  max-width: var(--screenshot-hero-frame-w);
 }
 
 .screenshot-rotator--showcase .screenshot-rotator__frame {
-  width: min(100%, var(--screenshot-showcase-frame-w));
+  width: 100%;
+  max-width: var(--screenshot-showcase-frame-w);
 }
 
 .screenshot-rotator__device-top {
@@ -425,7 +435,7 @@ p:last-child {
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 1.15rem 1.2rem 1rem;
+  padding: 1.15rem 0.85rem 1rem;
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.14);
 }
 
@@ -883,6 +893,18 @@ p:last-child {
   }
 }
 
+/* Large phones / small tablets — still single-column gallery, slightly roomier frames */
+@media (min-width: 30rem) {
+  :root {
+    --screenshot-hero-frame-w: min(86vw, 24rem, calc(var(--screenshot-hero-max-h) * 1080 / 2273));
+    --screenshot-showcase-frame-w: min(84vw, 23rem, calc(var(--screenshot-showcase-max-h) * 1080 / 2273));
+  }
+
+  .showcase-panel {
+    padding-inline: 1rem;
+  }
+}
+
 @media (min-width: 48rem) {
   .container {
     width: min(100% - 2.5rem, var(--max-width));
@@ -897,10 +919,27 @@ p:last-child {
   }
 
   .hero-grid {
-    /* Second column: floor width so the phone track cannot collapse to 0 with max-content sizing */
-    grid-template-columns: minmax(0, 1.12fr) minmax(min(260px, 100%), max-content);
+    grid-template-columns: minmax(0, 1.08fr) minmax(min(280px, 100%), max-content);
     align-items: center;
+    justify-items: stretch;
     gap: clamp(1rem, 3vw, 1.65rem);
+  }
+
+  .hero-grid > :first-child {
+    max-width: none;
+    justify-self: start;
+  }
+
+  .screenshot-rotator--hero {
+    max-width: none;
+    justify-self: end;
+  }
+
+  :root {
+    --screenshot-hero-max-h: min(78vh, 600px);
+    --screenshot-hero-frame-w: min(100%, 19rem, calc(var(--screenshot-hero-max-h) * 1080 / 2273));
+    --screenshot-showcase-max-h: min(62vh, 520px);
+    --screenshot-showcase-frame-w: min(78vw, 26rem, calc(var(--screenshot-showcase-max-h) * 1080 / 2273));
   }
 
   .feature-grid {
@@ -908,14 +947,20 @@ p:last-child {
     gap: 1rem;
   }
 
+  /* Tablet: keep one device per row so mockups stay readable */
   .showcase-grid {
-    grid-template-columns: repeat(2, minmax(min(220px, 100%), 1fr));
-    gap: 0.5rem;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .showcase-panel {
+    padding: 1.15rem 1.2rem 1rem;
   }
 }
 
 @media (min-width: 64rem) {
   :root {
+    --screenshot-hero-frame-w: min(312px, 34vw, calc(var(--screenshot-hero-max-h) * 1080 / 2273));
     --screenshot-showcase-max-h: min(56vh, 480px);
     --screenshot-showcase-frame-w: min(272px, 22.5vw, calc(var(--screenshot-showcase-max-h) * 1080 / 2273));
   }
@@ -927,5 +972,29 @@ p:last-child {
   .showcase-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 0.45rem;
+    justify-items: stretch;
+  }
+
+  .screenshot-rotator--showcase {
+    max-width: 100%;
+    justify-self: stretch;
+  }
+}
+
+/* Navigation: avoid cramped wrap on mid-width viewports */
+@media (max-width: 40rem) {
+  .header-inner {
+    gap: 0.65rem 0.85rem;
+  }
+
+  .site-nav {
+    gap: 0.5rem 0.85rem;
+    font-size: 0.8125rem;
+  }
+}
+
+@media (min-width: 40rem) {
+  .site-nav {
+    font-size: 0.875rem;
   }
 }
