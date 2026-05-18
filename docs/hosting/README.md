@@ -41,6 +41,39 @@ The script **`scripts/inject-public-origin.mjs`** replaces every **`https://ches
 
 - Re-scrape URLs with **Facebook Sharing Debugger**, **Twitter Card Validator**, **LinkedIn Post Inspector**, etc. Preview caches can lag.
 
+## Local preview (Live Server / VS Code)
+
+The site uses **relative** asset paths (`css/style.css`, `assets/…`) on normal pages so CSS loads whether Live Server’s root is the `chessbird-web` folder or a parent repo folder. **`404.html` keeps root-absolute `/js/…` scripts** because GitHub Pages serves it for URLs like `/play/482019` (the browser path is still `/play/…`, not `/404.html`).
+
+1. **Open the `chessbird-web` folder** in VS Code (recommended), then **Go Live** on `index.html`.
+2. **Invite landing locally:** Live Server does not emulate GitHub Pages `404.html` routing, so `/play/482019` will not work offline. Use:
+   - **`play-preview.html?room=482019`** (six digits) — same invite UI + CSS as production.
+3. If styles still fail, confirm the browser is not loading from the wrong folder (URL should contain `/chessbird-web/` only when the parent folder is the Live Server root).
+
+Production deploy is unchanged: `https://chessbird.app/play/:roomId` is served via **`404.html`** on GitHub Pages.
+
+## Invite links (`/play/:roomId`)
+
+Invite URLs stay on the marketing host:
+
+`https://chessbird.app/play/482019` (six-digit room code)
+
+GitHub Pages has no dynamic routes, so **`404.html`** loads **`js/play-invite-bootstrap.js`**, which `document.write`s a full HTML invite page (OG/Twitter meta, branded fallback, Open in App / Get the App). Social crawlers receive title, description, and **`/assets/branding/og-image.png`** from that response.
+
+| Concern | Where it lives |
+|--------|----------------|
+| Link previews (WhatsApp, Telegram, Discord, X) | `chessbird.app` via 404 bootstrap |
+| Android App Links | `/.well-known/assetlinks.json` + app manifest `https://chessbird.app/play/` |
+| Optional session-server OG (if `/play` is proxied to Railway) | `chessbird-server` `GET /play/:roomId` — set **`PUBLIC_APP_BASE_URL=https://chessbird.app`** |
+
+**App Links:** Replace `REPLACE_WITH_RELEASE_SHA256_FINGERPRINT` in **`.well-known/assetlinks.json`** with your **release** signing cert SHA-256 (`keytool -list -v -keystore …`). Redeploy the site, then verify in Play Console → App → Deep links.
+
+**Manual checks after deploy:**
+
+1. Open `https://chessbird.app/play/123456` in a browser — room code visible, CTAs work.
+2. Share the URL in WhatsApp/Telegram — preview shows ChessBird image and title (not a blank card).
+3. With the app installed, tap the link — app opens, room code prefilled, user taps **Join** (no auto-join).
+
 ## Related
 
 - GitHub Pages workflow: `docs/github-pages/README.md`

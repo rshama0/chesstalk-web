@@ -5,21 +5,21 @@
  * Layers live inside `.screenshot-rotator__screen`; paths are explicit for static hosting.
  */
 const screenshotGroups = {
-  home: ["/assets/screenshots/home/1.webp", "/assets/screenshots/home/2.webp"],
-  room: ["/assets/screenshots/room/1.webp", "/assets/screenshots/room/2.webp", "/assets/screenshots/room/3.webp", "/assets/screenshots/room/4.webp"],
+  home: ["assets/screenshots/home/1.webp", "assets/screenshots/home/2.webp"],
+  room: ["assets/screenshots/room/1.webp", "assets/screenshots/room/2.webp", "assets/screenshots/room/3.webp", "assets/screenshots/room/4.webp"],
   gameplay: [
-    "/assets/screenshots/gameplay/1.webp",
-    "/assets/screenshots/gameplay/2.webp",
-    "/assets/screenshots/gameplay/3.webp",
-    "/assets/screenshots/gameplay/4.webp",
-    "/assets/screenshots/gameplay/5.webp",
-    "/assets/screenshots/gameplay/6.webp",
-    "/assets/screenshots/gameplay/7.webp",
-    "/assets/screenshots/gameplay/8.webp",
-    "/assets/screenshots/gameplay/9.webp",
-    "/assets/screenshots/gameplay/10.webp",
+    "assets/screenshots/gameplay/1.webp",
+    "assets/screenshots/gameplay/2.webp",
+    "assets/screenshots/gameplay/3.webp",
+    "assets/screenshots/gameplay/4.webp",
+    "assets/screenshots/gameplay/5.webp",
+    "assets/screenshots/gameplay/6.webp",
+    "assets/screenshots/gameplay/7.webp",
+    "assets/screenshots/gameplay/8.webp",
+    "assets/screenshots/gameplay/9.webp",
+    "assets/screenshots/gameplay/10.webp",
   ],
-  other: ["/assets/screenshots/other/1.webp", "/assets/screenshots/other/2.webp", "/assets/screenshots/other/3.webp", "/assets/screenshots/other/4.webp", "/assets/screenshots/other/5.webp", "/assets/screenshots/other/6.webp"],
+  other: ["assets/screenshots/other/1.webp", "/assets/screenshots/other/2.webp", "/assets/screenshots/other/3.webp", "/assets/screenshots/other/4.webp", "/assets/screenshots/other/5.webp", "/assets/screenshots/other/6.webp"],
 };
 
 const SCREENSHOT_ROTATE_MS = 3500;

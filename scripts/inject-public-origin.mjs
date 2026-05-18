@@ -31,6 +31,7 @@ const files = [
   "privacy.html",
   "terms.html",
   "404.html",
+  "js/play-invite-bootstrap.js",
   "thank-you.html",
   "site.webmanifest",
 ];
