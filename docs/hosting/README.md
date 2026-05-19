@@ -66,11 +66,23 @@ GitHub Pages has no dynamic routes, so **`404.html`** loads **`js/play-invite-bo
 | Android App Links | `/.well-known/assetlinks.json` + app manifest `https://chessbird.app/play/` |
 | Optional session-server OG (if `/play` is proxied to Railway) | `chessbird-server` `GET /play/:roomId` — set **`PUBLIC_APP_BASE_URL=https://chessbird.app`** |
 
-**App Links:** Replace `REPLACE_WITH_RELEASE_SHA256_FINGERPRINT` in **`.well-known/assetlinks.json`** with your **release** signing cert SHA-256 (`keytool -list -v -keystore …`). Redeploy the site, then verify in Play Console → App → Deep links.
+### Android App Links (`.well-known`)
+
+GitHub Pages runs **Jekyll** by default. Jekyll **does not publish** dot-directories such as **`.well-known/`**, so the file can exist in git while **`https://chessbird.app/.well-known/assetlinks.json` returns 404**. Android then cannot verify the domain and invite links stay in the browser.
+
+**Fix (required):** keep an empty **`.nojekyll`** file at the site root (disables Jekyll; static files deploy as-is).
+
+**After deploy, confirm:**
+
+1. `https://chessbird.app/.well-known/assetlinks.json` → **HTTP 200**, valid JSON, `Content-Type: application/json` (or `text/plain`).
+2. `package_name` is **`com.chessbird.app`**.
+3. **`sha256_cert_fingerprints`** includes the **Play App Signing** certificate SHA-256 (Play Console → App integrity). Add upload-key SHA only if you sideload builds signed with it.
+4. Purge **Cloudflare** cache for `/.well-known/assetlinks.json` if the URL still 404s after Pages deploy.
+5. On device: Settings → Apps → ChessBird → **Open by default** → add/verify links, or reinstall the app to re-run verification.
 
 **Manual checks after deploy:**
 
-1. Open `https://chessbird.app/play/123456` in a browser — room code visible, CTAs work.
+1. Open `https://chessbird.app/play/123456` in a browser — room code visible, **Play Now** CTA works.
 2. Share the URL in WhatsApp/Telegram — preview shows ChessBird image and title (not a blank card).
 3. With the app installed, tap the link — app opens, room code prefilled, user taps **Join** (no auto-join).
 

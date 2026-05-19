@@ -15,6 +15,7 @@ GitHub Pages publishing workflow notes for **`chessbird-web`** live here.
    **Custom domain** (e.g. `https://chessbird.app`): deploy the repo as-is; no inject required. Details: **`docs/hosting/README.md`**.
 
 2. Keep **`404.html`** and **`index.html`** at the **site root** of the published output (GitHub Pages requirement).
+3. Keep **`.nojekyll`** at the site root so **`.well-known/assetlinks.json`** is published (Jekyll otherwise omits dot-folders).
 
 3. Re-validate social previews after each deploy (platform caches vary).
 
