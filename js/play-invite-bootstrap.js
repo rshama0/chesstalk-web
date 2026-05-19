@@ -2,8 +2,8 @@
 
 /**
  * GitHub Pages serves unknown paths (e.g. /play/482019) via 404.html.
- * This bootstrap runs synchronously in <head> and document.writes a complete
- * invite landing page with crawler-visible OG/Twitter meta, or the standard 404 page.
+ * Crawler OG tags live in 404.html + og-social.js. This script only mounts invite UI
+ * (body) on that shell, or replaces the full document for preview / other 404 paths.
  */
 (function () {
   var pathMatch = /^\/play\/(\d{6})\/?$/i.exec(window.location.pathname);
@@ -14,15 +14,33 @@
     }
   }
   if (pathMatch) {
-    document.write(renderInvitePage(pathMatch[1]));
+    if (is404OgShell()) {
+      mountInviteOnShell(pathMatch[1]);
+    } else {
+      replaceDocument(renderInvitePage(pathMatch[1]));
+    }
     return;
   }
   if (/^\/play\/?/i.test(window.location.pathname)) {
-    document.write(renderInvalidInvitePage());
+    replaceDocument(renderInvalidInvitePage());
     return;
   }
-  document.write(renderNotFoundPage());
+  replaceDocument(renderNotFoundPage());
 })();
+
+/** True when 404.html already supplied OG meta (avoid duplicate <head> via document.write). */
+function is404OgShell() {
+  return (
+    /^\/play\/\d{6}\/?$/i.test(window.location.pathname) &&
+    !!document.querySelector('meta[property="og:image"][content*="og-image.jpg"]')
+  );
+}
+
+function replaceDocument(html) {
+  document.open();
+  document.write(html);
+  document.close();
+}
 
 function publicOrigin() {
   return String(window.location.origin || "https://chessbird.app").replace(/\/+$/, "");
@@ -54,12 +72,26 @@ function escapeAttr(text) {
   return escapeHtml(text);
 }
 
+function ogImageUrl() {
+  if (typeof window.cbOgSocial !== "undefined" && window.cbOgSocial.absoluteImageUrl) {
+    return window.cbOgSocial.absoluteImageUrl();
+  }
+  return absoluteAsset("assets/branding/og-image.jpg");
+}
+
+function ogImageWidth() {
+  return typeof window.cbOgSocial !== "undefined" ? String(window.cbOgSocial.imageWidth) : "1200";
+}
+
+function ogImageHeight() {
+  return typeof window.cbOgSocial !== "undefined" ? String(window.cbOgSocial.imageHeight) : "630";
+}
+
 function ogHeadBlock(opts) {
-  var origin = publicOrigin();
   var pageUrl = escapeAttr(opts.pageUrl);
   var title = escapeAttr(opts.title);
   var description = escapeAttr(opts.description);
-  var image = escapeAttr(opts.image || absoluteAsset("assets/branding/og-image.png"));
+  var image = escapeAttr(opts.image || ogImageUrl());
   return (
     '<meta charset="utf-8" />' +
     '<base href="' +
@@ -93,9 +125,17 @@ function ogHeadBlock(opts) {
     '<meta property="og:image" content="' +
     image +
     '" />' +
+    '<meta property="og:image:secure_url" content="' +
+    image +
+    '" />' +
+    '<meta property="og:image:type" content="image/jpeg" />' +
     '<meta property="og:image:alt" content="ChessBird — social voice chess with friends, together." />' +
-    '<meta property="og:image:width" content="512" />' +
-    '<meta property="og:image:height" content="512" />' +
+    '<meta property="og:image:width" content="' +
+    ogImageWidth() +
+    '" />' +
+    '<meta property="og:image:height" content="' +
+    ogImageHeight() +
+    '" />' +
     '<meta name="twitter:card" content="summary_large_image" />' +
     '<meta name="twitter:title" content="' +
     title +
@@ -157,28 +197,74 @@ function siteFooter() {
   );
 }
 
-function renderInvitePage(roomId) {
-  var origin = publicOrigin();
-  var inviteUrl = origin + "/play/" + roomId;
-  var titlePlain = "Join room " + roomId + " on ChessBird";
-  var descPlain = "Join a ChessBird chess room and play together with voice.";
+function ensureDocumentBaseAndAssets() {
+  if (!document.querySelector("base")) {
+    var baseEl = document.createElement("base");
+    baseEl.href = siteBaseHref();
+    document.head.insertBefore(baseEl, document.head.firstChild);
+  }
+  if (!document.querySelector('link[rel="stylesheet"][href*="style.css"]')) {
+    var css = document.createElement("link");
+    css.rel = "stylesheet";
+    css.href = "css/style.css";
+    document.head.appendChild(css);
+  }
+  appendLinkOnce("link[rel='icon'][sizes='any']", {
+    rel: "icon",
+    href: absoluteAsset("favicon.ico"),
+    sizes: "any",
+  });
+  appendLinkOnce('link[rel="icon"][sizes="96x96"]', {
+    rel: "icon",
+    type: "image/png",
+    sizes: "96x96",
+    href: absoluteAsset("assets/branding/favicon-96x96.png"),
+  });
+  appendLinkOnce('link[rel="apple-touch-icon"]', {
+    rel: "apple-touch-icon",
+    href: absoluteAsset("assets/branding/apple-touch-icon.png"),
+  });
+  appendLinkOnce('link[rel="manifest"]', {
+    rel: "manifest",
+    href: absoluteAsset("site.webmanifest"),
+  });
+}
+
+function appendLinkOnce(selector, attrs) {
+  if (document.querySelector(selector)) return;
+  var link = document.createElement("link");
+  Object.keys(attrs).forEach(function (key) {
+    link.setAttribute(key, attrs[key]);
+  });
+  document.head.appendChild(link);
+}
+
+function mountInviteOnShell(roomId) {
+  ensureDocumentBaseAndAssets();
+  if (!document.querySelector('meta[name="chessbird:room-id"]')) {
+    var roomMeta = document.createElement("meta");
+    roomMeta.name = "chessbird:room-id";
+    roomMeta.content = roomId;
+    document.head.appendChild(roomMeta);
+  }
+  document.body.innerHTML = inviteBodyMarkup(roomId);
+  document.body.setAttribute("data-play-invite", roomId);
+  loadInviteUiScript();
+}
+
+function loadInviteUiScript() {
+  if (document.querySelector('script[src*="play-invite-ui.js"]')) return;
+  var script = document.createElement("script");
+  script.src = asset("js/play-invite-ui.js");
+  script.defer = true;
+  document.body.appendChild(script);
+}
+
+function inviteBodyMarkup(roomId) {
+  var roomDisplay = escapeHtml(roomId);
   var playStore =
     "https://play.google.com/store/apps/details?id=com.chessbird.app";
-  var head = ogHeadBlock({
-    pageUrl: inviteUrl,
-    title: titlePlain,
-    description: descPlain,
-  });
-  var roomDisplay = escapeHtml(roomId);
   return (
-    '<!doctype html><html lang="en"><head>' +
-    head +
-    '<meta name="chessbird:room-id" content="' +
-    escapeAttr(roomId) +
-    '" />' +
-    '</head><body data-play-invite="' +
-    escapeAttr(roomId) +
-    '">' +
     siteHeader() +
     '<main class="legal-main" id="main-content">' +
     '<section class="section"><div class="container play-invite">' +
@@ -198,7 +284,30 @@ function renderInvitePage(roomId) {
     '" rel="noopener noreferrer">Play Now</a>' +
     "</p>" +
     "</div></section></main>" +
-    siteFooter() +
+    siteFooter()
+  );
+}
+
+function renderInvitePage(roomId) {
+  var origin = publicOrigin();
+  var inviteUrl = origin + "/play/" + roomId;
+  var titlePlain = "Join room " + roomId + " on ChessBird";
+  var descPlain = "Join a ChessBird chess room and play together with voice.";
+  var head = ogHeadBlock({
+    pageUrl: inviteUrl,
+    title: titlePlain,
+    description: descPlain,
+  });
+  return (
+    '<!doctype html><html lang="en"><head>' +
+    head +
+    '<meta name="chessbird:room-id" content="' +
+    escapeAttr(roomId) +
+    '" />' +
+    '</head><body data-play-invite="' +
+    escapeAttr(roomId) +
+    '">' +
+    inviteBodyMarkup(roomId) +
     '<script src="js/play-invite-ui.js" defer></script>' +
     "</body></html>"
   );

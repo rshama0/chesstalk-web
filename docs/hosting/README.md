@@ -19,7 +19,7 @@ Crawlers (WhatsApp, Telegram, Discord, X, LinkedIn, Facebook, Slack) need **full
 
 ### Shared social image
 
-All pages use **`https://chessbird.app/assets/branding/og-image.png`** for **`og:image`** and **`twitter:image`**. Replace that file (and optional width/height meta) when you ship a final art pass.
+All pages use **`https://chessbird.app/assets/branding/og-image.jpg`** (1200×630 JPEG) for **`og:image`** and **`twitter:image`**. Replace that file and update `og:image:width` / `og:image:height` if dimensions change. See **`docs/hosting/og-previews.md`** for invite-route crawler behavior, HTTP 404 on GitHub Pages, and optional Cloudflare Worker.
 
 ### Optional: GitHub Pages preview / alternate origin
 
@@ -58,11 +58,11 @@ Invite URLs stay on the marketing host:
 
 `https://chessbird.app/play/482019` (six-digit room code)
 
-GitHub Pages has no dynamic routes, so **`404.html`** loads **`js/play-invite-bootstrap.js`**, which `document.write`s a full HTML invite page (OG/Twitter meta, branded fallback, Open in App / Get the App). Social crawlers receive title, description, and **`/assets/branding/og-image.png`** from that response.
+GitHub Pages has no dynamic routes, so **`404.html`** serves `/play/:roomId` with **static OG tags in `<head>`** plus **`js/og-social.js`** (room-specific meta) and **`js/play-invite-bootstrap.js`** (full invite UI via `document.write`). Response status is still **404** unless you add the optional **Cloudflare Worker** (`cloudflare/play-invite-og-worker.mjs`) for crawler User-Agents.
 
 | Concern | Where it lives |
 |--------|----------------|
-| Link previews (WhatsApp, Telegram, Discord, X) | `chessbird.app` via 404 bootstrap |
+| Link previews (WhatsApp, Telegram, Discord, X) | `chessbird.app` via `404.html` + `og-social.js`; optional CF worker for HTTP 200 |
 | Android App Links | `/.well-known/assetlinks.json` + app manifest `https://chessbird.app/play/` |
 | Optional session-server OG (if `/play` is proxied to Railway) | `chessbird-server` `GET /play/:roomId` — set **`PUBLIC_APP_BASE_URL=https://chessbird.app`** |
 

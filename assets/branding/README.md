@@ -10,7 +10,8 @@ Raster icons for **favicons**, **Apple touch**, **Open Graph / Twitter** preview
 | `apple-touch-icon.png` | iOS / Safari “Add to Home Screen” (180×180). |
 | `web-app-manifest-192x192.png` | Manifest icon (192). |
 | `web-app-manifest-512x512.png` | Manifest icon (512). |
-| `og-image.png` | **Shared** Open Graph + Twitter preview image (`og:image` / `twitter:image` on all pages). Replace with your final 1200×630 (or other) asset while keeping this filename, then update `og:image:width` / `og:image:height` in each HTML file if dimensions change. |
+| `og-image.jpg` | **Shared** Open Graph + Twitter preview image (`og:image` / `twitter:image` on all pages). Production asset: **1200×630** JPEG (~80KB). Update `og:image:width` / `og:image:height` in HTML/JS if you replace it. |
+| `og-image-source-1730x909.png` | Optional design master (not linked in HTML); regenerate JPEG with your toolchain. |
 
 ## Root `favicon.ico`
 
